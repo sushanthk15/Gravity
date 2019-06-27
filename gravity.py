@@ -5,17 +5,14 @@ import numpy as np
 # tqdm is used for a progress bar
 from tqdm import tqdm
 
-#Load Data from JSON File
-with open('gravity_parameters.json', 'r') as f:
-    gravity_data = json.load(f)
-# parameters calling from the extracted data
-GRAVITATIONAL_CONSTANT = gravity_data["GRAVITATIONAL_CONSTANT"]  # m^3 kg^-1 s^-2
-POSITIONS = gravity_data["POSITIONS"]
-VELOCITIES = gravity_data["VELOCITIES"]
-MASSES = [4 / gravity_data["GRAVITATIONAL_CONSTANT"], 4 / gravity_data["GRAVITATIONAL_CONSTANT"]]
-TIME_STEP = gravity_data["TIME_STEP"]  # s
-NUMBER_OF_TIME_STEPS = gravity_data["NUMBER_OF_TIME_STEPS"]
-PLOT_INTERVAL = gravity_data["PLOT_INTERVAL"]
+# parameters
+GRAVITATIONAL_CONSTANT = 6.67430e-11  # m^3 kg^-1 s^-2
+POSITIONS = np.array([[-1, 0], [1, 0]])
+VELOCITIES = np.array([[0, -1], [0, 1]])
+MASSES = [4 / GRAVITATIONAL_CONSTANT, 4 / GRAVITATIONAL_CONSTANT]
+TIME_STEP = 0.0001  # s
+NUMBER_OF_TIME_STEPS = 1000000
+PLOT_INTERVAL = 1000
 
 # derived variables
 number_of_planets = len(POSITIONS)
@@ -27,8 +24,8 @@ for position in POSITIONS:
     assert len(position) == number_of_dimensions
 for velocity in POSITIONS:
     assert len(velocity) == number_of_dimensions
-
-mass = np.array([MASSES[1],MASSES[0]]) #Inverse mass relation used for computing acceleration
+POSITIONS_STORE = [POSITIONS]
+mass = np.array([MASSES[1],MASSES[0]])
 for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
     # plotting every single configuration does not make sense
 	#if step % PLOT_INTERVAL == 0:
@@ -55,7 +52,23 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
     distance_vector = POSITIONS[0]-POSITIONS[1]
     distance_vector_length = (np.linalg.norm(distance_vector))**2
     acceleration = (GRAVITATIONAL_CONSTANT*mass/distance_vector_length)*np.array([-1*distance_vector,distance_vector])
-    POSITIONS = POSITIONS + VELOCITIES*TIME_STEP
-    VELOCITIES = VELOCITIES + acceleration * TIME_STEP
+	#Semi implicit Euler integration
+    VELOCITIES = VELOCITIES + acceleration * TIME_STEP #Getting updated velocity by v_new v_old + a_old*delta_t
+    POSITIONS = POSITIONS + VELOCITIES*TIME_STEP #getting updated position x_new = x_old + v_new*delta_t
+    POSITIONS_STORE.append(POSITIONS)
 
+
+#converting the POSITIONS list into array to facilitate plotting
+position_array = np.array(POSITIONS_STORE) #Shape will be (N,2,2)
+
+
+
+fig, ax = plt.subplots(ncols=2, figsize=(15,5))
+for i in range(0, position_array.shape[1]):
+    ax[i].plot(position_array[:, i, 0], position_array[:, i, 1]) #Slicing so as to plot X and Y 
+    ax[i].set_title(str('Trajectory of Planet:')+str(i+1), fontsize = 20)
+    ax[i].set_xlabel("x", fontsize=20)
+    ax[i].set_ylabel("y", fontsize = 20)
+    fig.savefig("Trajectotres_of_planets_Semi_Implicit_Euler.png")
+    plt.close(fig)
 
