@@ -5,14 +5,17 @@ import numpy as np
 # tqdm is used for a progress bar
 from tqdm import tqdm
 
-# parameters
-GRAVITATIONAL_CONSTANT = 6.67430e-11  # m^3 kg^-1 s^-2
-POSITIONS = np.array([[-1, 0], [1, 0]])
-VELOCITIES = np.array([[0, -1], [0, 1]])
-MASSES = [4 / GRAVITATIONAL_CONSTANT, 4 / GRAVITATIONAL_CONSTANT]
-TIME_STEP = 0.0001  # s
-NUMBER_OF_TIME_STEPS = 1000000
-PLOT_INTERVAL = 1000
+#Load Data from JSON File
+with open('gravity_parameters.json', 'r') as f:
+    gravity_data = json.load(f)
+# parameters calling from the extracted data
+GRAVITATIONAL_CONSTANT = gravity_data["GRAVITATIONAL_CONSTANT"]  # m^3 kg^-1 s^-2
+POSITIONS = gravity_data["POSITIONS"]
+VELOCITIES = gravity_data["VELOCITIES"]
+MASSES = [4 / gravity_data["GRAVITATIONAL_CONSTANT"], 4 / gravity_data["GRAVITATIONAL_CONSTANT"]]
+TIME_STEP = gravity_data["TIME_STEP"]  # s
+NUMBER_OF_TIME_STEPS = gravity_data["NUMBER_OF_TIME_STEPS"]
+PLOT_INTERVAL = gravity_data["PLOT_INTERVAL"]
 
 # derived variables
 number_of_planets = len(POSITIONS)
