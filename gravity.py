@@ -25,27 +25,27 @@ for position in POSITIONS:
 for velocity in POSITIONS:
     assert len(velocity) == number_of_dimensions
 
-mass = np.array([MASSES[1],MASSES[0]])
+mass = np.array([MASSES[1],MASSES[0]]) #Inverse mass relation used for computing acceleration
 for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
     # plotting every single configuration does not make sense
-	if step % PLOT_INTERVAL == 0:
-		fig, ax = plt.subplots()
-		x = []
-		y = []
-		for position in POSITIONS:
-			x.append(position[0])
-			y.append(position[1])
-		ax.scatter(x, y)
-		ax.set_aspect("equal")
-		ax.set_xlim(-1.5, 1.5)
-		ax.set_ylim(-1.5, 1.5)
-		ax.set_title("t = {:8.4f} s".format(step * TIME_STEP))
-		ax.set_xlabel("x")
-		ax.set_ylabel("y")
-		output_file_path = Path("positions", "{:016d}.png".format(step))
-		output_file_path.parent.mkdir(exist_ok=True)
-		fig.savefig(output_file_path)
-		plt.close(fig)
+	#if step % PLOT_INTERVAL == 0:
+	#	fig, ax = plt.subplots()
+	#	x = []
+	#	y = []
+	#	for position in POSITIONS:
+	#		x.append(position[0])
+	#		y.append(position[1])
+	#	ax.scatter(x, y)
+	#	ax.set_aspect("equal")
+	#	ax.set_xlim(-1.5, 1.5)
+	#	ax.set_ylim(-1.5, 1.5)
+	#	ax.set_title("t = {:8.4f} s".format(step * TIME_STEP))
+	#	ax.set_xlabel("x")
+	#	ax.set_ylabel("y")
+	#	output_file_path = Path("positions", "{:016d}.png".format(step))
+	#	output_file_path.parent.mkdir(exist_ok=True)
+	#	fig.savefig(output_file_path)
+	#	plt.close(fig)
 	
     # the accelerations for each planet are required to update the velocities
     
