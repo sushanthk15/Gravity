@@ -24,8 +24,8 @@ for position in POSITIONS:
     assert len(position) == number_of_dimensions
 for velocity in POSITIONS:
     assert len(velocity) == number_of_dimensions
-
-mass = np.array([MASSES[1],MASSES[0]])
+POSITIONS_STORE = [POSITIONS]
+mass = np.array([MASSES[1],MASSES[0]]) #Inverse Mass Relationship
 for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
     # plotting every single configuration does not make sense
 	if step % PLOT_INTERVAL == 0:
@@ -51,8 +51,24 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
     
     distance_vector = POSITIONS[0]-POSITIONS[1]
     distance_vector_length = (np.linalg.norm(distance_vector))
-    acceleration = (GRAVITATIONAL_CONSTANT*mass/distance_vector_length**3)*np.array([-1*distance_vector,distance_vector]) #Taken care of  Unithet Vector along the displacement direction by taking cube of distance
-    POSITIONS = POSITIONS + VELOCITIES*TIME_STEP #POSITIONS Update
+    acceleration = (GRAVITATIONAL_CONSTANT*mass/distance_vector_length**3)*np.array([-1*distance_vector,distance_vector]) #Taken care of  the Unit Vector along the displacement direction by taking cube of distance
+    
     VELOCITIES = VELOCITIES + acceleration * TIME_STEP #VELOCITIES Update
+	POSITIONS = POSITIONS + VELOCITIES*TIME_STEP #POSITIONS Update
+	POSITIONS_STORE.append(POSITIONS)
+
+#converting the POSITIONS list into array to facilitate plotting
+position_array = np.array(POSITIONS_STORE) #Shape will be (N,2,2)
+
+## Plotting the Trajectories of Planet 1 and 2
+
+fig, ax = plt.subplots(ncols=2, figsize=(15,5))
+for i in range(0, position_array.shape[1]):
+    ax[i].plot(position_array[:, i, 0], position_array[:, i, 1]) #Slicing so as to plot X and Y 
+    ax[i].set_title(str('Trajectory of Planet:')+str(i+1), fontsize = 20)
+    ax[i].set_xlabel("x", fontsize=20)
+    ax[i].set_ylabel("y", fontsize = 20)
+    fig.savefig("Trajectotres_of_planets_Semi_Implicit_Euler.png")
+    plt.close(fig)
 
 
