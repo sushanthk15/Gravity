@@ -81,8 +81,8 @@ for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
         plt.close(fig)
     
     distance_vector = POSITIONS[0]-POSITIONS[1]
-    distance_vector_length = (np.linalg.norm(distance_vector))**2  #Computing the Distance vector Length
-    acceleration = (GRAVITATIONAL_CONSTANT*mass/distance_vector_length)*np.array([-1*distance_vector,distance_vector])
+    distance_vector_length = (np.linalg.norm(distance_vector))  #Computing the Distance vector Length
+    acceleration = (GRAVITATIONAL_CONSTANT*mass/distance_vector_length**3)*np.array([-1*distance_vector,distance_vector]) #Taken care of the Unit Vector along the displacement direction by taking cube of distance
     POSITIONS = POSITIONS + VELOCITIES*TIME_STEP #position update
-    VELOCITIES = VELOCITIES + acceleration * TIME_STEP #position update
+    VELOCITIES = VELOCITIES + acceleration * TIME_STEP #velocity update
 
