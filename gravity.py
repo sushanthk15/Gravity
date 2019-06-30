@@ -25,64 +25,34 @@ for position in POSITIONS:
 for velocity in POSITIONS:
     assert len(velocity) == number_of_dimensions
 
-#Defining the meshgrid such that particle masses are present at the centre of each pixels
-
-x_start=-1.5
-x_end=1.5
-y_start=-1.5
-y_end=1.5
-
-## Number of pixels i.e., little rectangles facilitating sharp visulaization
-
-n_pixel_x=10
-n_pixel_y=10
-
-dx=(x_end-x_start)/n_pixel_x
-dy=(y_end-y_start)/n_pixel_y
-
-xv=np.linspace(x_start,x_end,n_pixel_x+1)
-yv=np.linspace(y_start,y_end,n_pixel_y+1)
-
-xc=np.linspace(x_start+(dx/2),x_end-(dx/2),n_pixel_x)
-yc=np.linspace(y_start+(dy/2),y_end-(dy/2),n_pixel_y)
-
-xv_2d,yv_2d=np.meshgrid(xv,yv)
-xc_2d,yc_2d=np.meshgrid(xc,yc)
-
-
-mass = np.array([MASSES[1],MASSES[0]]) # This mass variable is used in computing the acceleration 
-
+mass = np.array([MASSES[1],MASSES[0]])
 for step in tqdm(range(NUMBER_OF_TIME_STEPS+1)):
-    #Computing Gravitational Potential
-    potential_sum = np.zeros_like(xc_2d)
-    for i in range(number_of_planets):
-        x1 = POSITIONS[i,0] - xc_2d
-        x1_2 = np.square(x1)
-        y1 = POSITIONS[i,1] - yc_2d
-        y1_2 = np.square(y1)
-        distance = x1_2 + y1_2
-        potential_sum += (-GRAVITATIONAL_CONSTANT*MASSES[i])*(np.reciprocal(np.sqrt(distance)))
-        
-
     # plotting every single configuration does not make sense
-    if step % PLOT_INTERVAL == 0:
-        fig, ax = plt.subplots()
-        plt.pcolormesh(xv,yv,potential_sum)  #pcolormesh
-        plt.colorbar()
-        ax.set_aspect("equal")
-        ax.set_xlim(-1.5, 1.5)
-        ax.set_ylim(-1.5, 1.5)
-        ax.set_title("Potential at t = {:8.4f} s".format(step * TIME_STEP))
-        ax.set_xlabel("x")
-        ax.set_ylabel("y")
-        output_file_path = Path("potentials", "{:016d}.png".format(step))
-        output_file_path.parent.mkdir(exist_ok=True)
-        fig.savefig(str(output_file_path))
-        plt.close(fig)
+	if step % PLOT_INTERVAL == 0:
+		fig, ax = plt.subplots()
+		x = []
+		y = []
+		for position in POSITIONS:
+			x.append(position[0])
+			y.append(position[1])
+		ax.scatter(x, y)
+		ax.set_aspect("equal")
+		ax.set_xlim(-1.5, 1.5)
+		ax.set_ylim(-1.5, 1.5)
+		ax.set_title("t = {:8.4f} s".format(step * TIME_STEP))
+		ax.set_xlabel("x")
+		ax.set_ylabel("y")
+		output_file_path = Path("positions", "{:016d}.png".format(step))
+		output_file_path.parent.mkdir(exist_ok=True)
+		fig.savefig(output_file_path)
+		plt.close(fig)
+	
+    # the accelerations for each planet are required to update the velocities
     
     distance_vector = POSITIONS[0]-POSITIONS[1]
-    distance_vector_length = (np.linalg.norm(distance_vector))  #Computing the Distance vector Length
+    distance_vector_length = (np.linalg.norm(distance_vector))
     acceleration = (GRAVITATIONAL_CONSTANT*mass/distance_vector_length**3)*np.array([-1*distance_vector,distance_vector]) #Taken care of the Unit Vector along the displacement direction by taking cube of distance
-    POSITIONS = POSITIONS + VELOCITIES*TIME_STEP #position update
-    VELOCITIES = VELOCITIES + acceleration * TIME_STEP #velocity update
+    POSITIONS = POSITIONS + VELOCITIES*TIME_STEP #POSITIONS Update
+    VELOCITIES = VELOCITIES + acceleration * TIME_STEP #VELOCITIES Update
+
 
