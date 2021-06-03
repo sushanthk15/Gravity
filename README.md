@@ -1,7 +1,10 @@
-# SoftwareToolsforCMS
-Assignment as a part of Exam Prerequisite|
-Name: Sushanth Keshav |
-Course In-charge : Dominik Steinberger|
-Semester: Summer Semester 2019|
-Immatrik. Nr. 63944|
-TU Bergakademie Freiberg
+# Gravity
+### Motion of Celestial Bodies
+
+
+## Tasks to solve:
+-  "Numpyfication" of the code
+-  How to Analyze the bottlenecks in the program and types of ways to TIME a program
+-  Various visualization schemes from Matplotlib.pyplot library
+-  Implementation of Euler Schemes for time integration
+-  Use of JSON python Package  
