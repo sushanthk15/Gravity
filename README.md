@@ -1,6 +1,6 @@
 # Gravity
 ### Motion of Celestial Bodies
-
+<img src="https://github.com/sushanthk15/SoftwareToolsforCMS/blob/master/SolSysOver.png">
 
 ## Tasks to solve:
 -  "Numpyfication" of the code
